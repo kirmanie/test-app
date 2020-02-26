@@ -1,0 +1,31 @@
+
+jobs:
+  - name: test
+    plan:
+      - {get: repo, trigger: true}
+      - task: test
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source: { repository: node, tag: "8" }
+          inputs:
+            - name: repo
+          run:
+            path: /bin/bash
+            args:
+              - -c
+              - |
+                set -e
+                cd repo
+                npm test
+
+resources:
+  - name: repo
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/kirmanie/test-app.git
+      branch: master
+
+
