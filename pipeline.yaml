@@ -23,8 +23,20 @@ jobs:
                 cd repo
                 npm install
                 npm test
+      - put: test-app-image
+        params:
+          build: ./repo
+          tag_file: ./version/version
+        get_params: {skip_download: true}
 
 resources:
+  - name: test-app-image
+    type: docker-image
+    source:
+      repository: gcr.io/sports-leap-prod/kirmanie-test-app
+      username: _json_key
+      password: ((common-secrets.leap-cluster-admin))
+
   - name: version
     type: semver
     source:
