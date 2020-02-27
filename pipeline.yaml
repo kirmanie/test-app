@@ -2,6 +2,7 @@
 jobs:
   - name: test
     plan:
+      - {put: version, params: {bump: patch}}
       - {get: repo, trigger: true}
       - task: test
         config:
@@ -11,17 +12,26 @@ jobs:
             source: { repository: node, tag: "8" }
           inputs:
             - name: repo
+            - name: version
           run:
             path: /bin/bash
             args:
               - -c
               - |
                 set -e
+                echo "VERSION: $(cat ./version/version)"
                 cd repo
                 npm install
                 npm test
 
 resources:
+  - name: version
+    type: semver
+    source:
+      driver: gcs
+      bucket: leap-artifact-versions
+      key: kirmanie-test-app
+      json_key: ((common-secrets.leap-cluster-admin))
   - name: repo
     type: git
     icon: github-circle
