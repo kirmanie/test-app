@@ -18,6 +18,7 @@ jobs:
               - |
                 set -e
                 cd repo
+                npm install
                 npm test
 
 resources:
